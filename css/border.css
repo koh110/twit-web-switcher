@@ -1,0 +1,8 @@
+/* 仕切り線用 */
+p.line {
+	border-top: 1px solid #DDDDDD;
+	border-bottom: 1px solid #FFFFFF;
+	height: 0;
+	margin: 10px 0px;
+	width: 100%;
+}

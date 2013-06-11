@@ -1,28 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 <head>
 <title>option page</title>
 <!--jsファイルの読み込み-->
-<script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="global.js"></script>
-<script type="text/javascript" src="storage.js"></script>
-<script type="text/javascript" src="options.js"></script>
+<script type="text/javascript" src="jquery/jquery.js"></script>
+<script type="text/javascript" src="js/global.js"></script>
+<script type="text/javascript" src="js/storage.js"></script>
+<script type="text/javascript" src="js/options.js"></script>
 <!-- cssファイルの読み込み-->
-<link rel="stylesheet" type="text/css" href="options.css">
+<link rel="stylesheet" type="text/css" href="css/options.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 </head>
+<body>
 <div id="siteArea">
 <!-- headerエリア -->
-<div id="headerArea">
+<div id="headerArea" class="well">
 アカウント切り替え設定
 </div>
 <!-- アカウント設定エリア -->
-<div id="accountArea"></div>
+<div id="accountArea" class="well"></div>
 <!-- buttonエリア -->
 <div id="buttonArea">
-<form name="buttonForm">
-<input type="button" id="saveBtn" value="save">
-<input type="button" id="clearBtn" value="clear">
+<form name="buttonForm" class="well">
+	<button class="btn" type="submit" id="saveBtn">save</button>
+	<button class="btn" type="submit" id="clearBtn">clear</button>
 </form>
 </div>
 
