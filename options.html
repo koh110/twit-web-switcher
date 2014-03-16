@@ -1,33 +1,40 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" ng-app="optionApp">
 <head>
-<title>option page</title>
-<!--jsファイルの読み込み-->
-<script type="text/javascript" src="jquery/jquery.js"></script>
-<script type="text/javascript" src="js/global.js"></script>
-<script type="text/javascript" src="js/storage.js"></script>
-<script type="text/javascript" src="js/options.js"></script>
-<!-- cssファイルの読み込み-->
-<link rel="stylesheet" type="text/css" href="css/options.css">
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <title>option page</title>
+  <!--jsファイルの読み込み-->
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/angular.min.js"></script>
+  <script type="text/javascript" src="js/global.js"></script>
+  <script type="text/javascript" src="js/storage.js"></script>
+  <script type="text/javascript" src="js/angularApp.js"></script>
+  <script type="text/javascript" src="js/options.js"></script>
+  <!-- cssファイルの読み込み-->
+  <link rel="stylesheet" type="text/css" href="css/options.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 </head>
-<body>
-<div id="siteArea">
-<!-- headerエリア -->
-<div id="headerArea" class="well">
-アカウント切り替え設定
-</div>
-<!-- アカウント設定エリア -->
-<div id="accountArea" class="well"></div>
-<!-- buttonエリア -->
-<div id="buttonArea">
-<form name="buttonForm" class="well">
-	<button class="btn" type="submit" id="saveBtn">save</button>
-	<button class="btn" type="submit" id="clearBtn">clear</button>
-</form>
-</div>
+<body ng-controller="optionCtrl">
+  <div id="siteArea">
+    <!-- headerエリア -->
+    <div id="headerArea" class="well">アカウント切り替え設定</div>
 
-</div>
+    <!-- アカウント設定エリア -->
+    <div id="accounts" class="well">
+      <label for="passwordVisible">
+        <input type="checkbox" id="passwordVisible" ng-model="passwordIsVisible">
+        パスワードを表示する
+      </label>
+      <div ng-repeat="account in accounts" class="accountData">
+        <input class="accountId" type="text" placeholder="twitter id" value='{{account.id}}'/>
+        <input class="accountPass" type="{{textOrPassword()}}" placeholder="password" value='{{account.password}}'/>
+      </div>
+    </div>
 
+    <!-- buttonエリア -->
+    <div id="buttonArea" class="well">
+      <button class="btn" id="saveBtn" ng-click="saveAccount()">save</button>
+      <button class="btn" id="clearBtn" ng-click="clearAccount()">clear</button>
+    </div>
+  </div>
 </body>
 </html>

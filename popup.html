@@ -1,43 +1,45 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" ng-app="popupApp">
 <head>
-<!-- jsファイルの読み込み-->
-<script type="text/javascript" src="jquery/jquery.js"></script>
-<script type="text/javascript" src="js/global.js"></script>
-<script type="text/javascript" src="js/popup.js"></script>
-<!-- cssファイルの読み込み -->
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="css/border.css">
-<link rel="stylesheet" type="text/css" href="css/popup.css">
+  <!-- jsファイルの読み込み-->
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/angular.min.js"></script>
+  <script type="text/javascript" src="js/global.js"></script>
+  <script type="text/javascript" src="js/storage.js"></script>
+  <script type="text/javascript" src="js/angularApp.js"></script>
+  <script type="text/javascript" src="js/popup.js"></script>
+  <!-- cssファイルの読み込み -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/border.css">
+  <link rel="stylesheet" type="text/css" href="css/popup.css">
 </head>
-<body>
-<div id="site">
+<body ng-controller="popupCtrl">
+  <div id="site">
+    <!-- headerエリア -->
+    <div id="header" ng-click="openTwitter()">
+      twitter
+    </div>
 
-<!-- headerエリア -->
-<div id="header">
-	twitter
-</div>
+    <p class="line"></p>
 
-<p class="line"></p>
+    <!-- コンテンツエリア -->
+    <div ng-repeat="account in accounts" id="accounts">
+      <div class="accountRow" ng-click="login(account.id)">{{account.id}}</div>
+    </div>
 
-<!-- コンテンツエリア -->
-<div id="contents" ></div>
+    <p class="line"></p>
 
-<p class="line"></p>
+    <!-- ボタンエリア -->
+    <div id="btnArea">
+      <div id="logoutButton">logout</div>
+    </div>
 
-<!-- ボタンエリア -->
-<div id="btnArea">
-	<div id="logoutButton">logout</div>
-</div>
+    <p class="line"></p>
 
-<p class="line"></p>
-
-<!-- footerエリア-->
-<div id="footer">
-<a href="#" id="optionPage">option</a>
-</div>
-
-</div>
-
+    <!-- footerエリア-->
+    <div id="footer">
+      <a href="#" id="optionPage" ng-click="openOptionPage()">option</a>
+    </div>
+  </div>
 </body>
 </html>
