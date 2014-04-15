@@ -2,7 +2,7 @@
 <html lang="ja" ng-app="popupApp">
 <head>
   <!-- jsファイルの読み込み-->
-  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type="text/javascript" src="js/angular.min.js"></script>
   <script type="text/javascript" src="js/global.js"></script>
   <script type="text/javascript" src="js/storage.js"></script>
@@ -31,7 +31,7 @@
 
     <!-- ボタンエリア -->
     <div id="btnArea">
-      <div id="logoutButton">logout</div>
+      <div id="logoutButton" ng-click="logout()">logout</div>
     </div>
 
     <p class="line"></p>
