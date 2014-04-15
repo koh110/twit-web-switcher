@@ -23,7 +23,7 @@ angular.module('optionApp', ['twitSwitchApp'])
 
     // アカウント情報の保存
     var saveAccounts = function() {
-        var saveData = [];
+        var saveData = {};
 
         // 保存用データ取得
         var accounts = angular.element('.accountData');
@@ -31,11 +31,16 @@ angular.module('optionApp', ['twitSwitchApp'])
             var accountObj = angular.element(record);
             var id = accountObj.find('.accountId').val();
             var pass = accountObj.find('.accountPass').val();
-            saveData.push({'id': id, 'password': pass});
+            saveData[id] = {'id': id, 'password': pass};
         });
 
         // 保存
         Storage.setLocal(Storage.accountsKey, saveData);
+
+        // デスクトップ通知
+        webkitNotifications
+          .createNotification('../icon128.png', 'save', '保存しました')
+          .show();
 
         this.tabUpdate;
     };
