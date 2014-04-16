@@ -1,6 +1,6 @@
 angular.module('popupApp', ['twitSwitchApp'])
-.controller('popupCtrl', function($scope, getAccounts) {
-    $scope.accounts = getAccounts;
+.controller('popupCtrl', function($scope, accounts) {
+    $scope.accounts = accounts;
     $scope.login = function(accountId) {
         var message = {
             message: Message.loginTwitter,

@@ -1,10 +1,22 @@
 angular.module('optionApp', ['twitSwitchApp'])
-.controller('optionCtrl', function($scope, getAccounts, options) {
-    $scope.accounts = getAccounts;
+.controller('optionCtrl', function($scope, accounts, options) {
+    $scope.accounts = accounts;
 
     $scope.textOrPassword = options.textOrPassword;
-    $scope.saveAccount = options.saveAccounts;
+    $scope.saveAccount = function () {
+        options.saveAccount($scope.accounts);
+    };
     $scope.clearAccount = options.clearAccounts;
+
+    $scope.addAccountId = "";
+    $scope.addAccountPassword = "";
+    $scope.addAccount = function() {
+        var account = {
+            'id': $scope.addAccountId,
+            'password': $scope.addAccountPassword
+        };
+        $scope.accounts.push(account);
+    };
 })
 .factory('options', function() {
     // tab更新
@@ -22,20 +34,8 @@ angular.module('optionApp', ['twitSwitchApp'])
     };
 
     // アカウント情報の保存
-    var saveAccounts = function() {
-        var saveData = {};
-
-        // 保存用データ取得
-        var accounts = angular.element('.accountData');
-        angular.forEach(accounts, function(record, i) {
-            var accountObj = angular.element(record);
-            var id = accountObj.find('.accountId').val();
-            var pass = accountObj.find('.accountPass').val();
-            saveData[id] = {'id': id, 'password': pass};
-        });
-
-        // 保存
-        Storage.setLocal(Storage.accountsKey, saveData);
+    var saveAccounts = function(accounts) {
+        Storage.getLocal(Storage.accountsKey, accounts);
 
         // デスクトップ通知
         webkitNotifications

@@ -41,14 +41,13 @@ function isLogin() {
 
 chrome.runtime.onConnect.addListener(function(port) {
     port.onMessage.addListener(function(msg) {
-console.log(msg);
         switch(msg.message) {
             case Message.logoutTwitter:
                 twitterLogoutAction();
             break;
             case Message.loginTwitter:
                 if (location.hostname === 'twitter.com') {
-                    twitterLoginAction(msg.account.id, msg.account.pass);
+                    twitterLoginAction(msg.account.id, msg.account.password);
                 } else {
                     // loginできるホスト名じゃない時は遷移させる
                     port.postMessage({message: Message.moveLoginPageTwitter});

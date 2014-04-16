@@ -20,19 +20,29 @@
 
     <!-- アカウント設定エリア -->
     <div id="accounts" class="well">
-      <label for="passwordVisible">
-        <input type="checkbox" id="passwordVisible" ng-model="passwordIsVisible">
-        パスワードを表示する
-      </label>
+      アカウント一覧
       <div ng-repeat="account in accounts" class="accountData">
         <input class="accountId" type="text" placeholder="twitter id" value='{{account.id}}'/>
         <input class="accountPass" type="{{textOrPassword()}}" placeholder="password" value='{{account.password}}'/>
       </div>
+      <label for="passwordVisible">
+        <input type="checkbox" id="passwordVisible" ng-model="passwordIsVisible">
+        パスワードを表示する
+      </label>
+    </div>
+    <!-- アカウント追加 -->
+    <div class="well">
+      <label>
+          アカウントを追加する
+      </label>
+      <input class="accountId" type="text" placeholder="twitter id" ng-model="addAccountId"/>
+      <input class="accountPass" type="text" placeholder="password" ng-model="addAccountPassword"/>
+      <button class="btn" id="addAccountBtn" ng-click="addAccount()">+</button>
     </div>
 
     <!-- buttonエリア -->
     <div id="buttonArea" class="well">
-      <button class="btn" id="saveBtn" ng-click="saveAccount()">save</button>
+      <button class="btn btn-primary" id="saveBtn" ng-click="saveAccount()">save</button>
       <button class="btn" id="clearBtn" ng-click="clearAccount()">clear</button>
     </div>
   </div>
