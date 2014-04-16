@@ -4,9 +4,12 @@ angular.module('optionApp', ['twitSwitchApp'])
 
     $scope.textOrPassword = options.textOrPassword;
     $scope.saveAccount = function () {
-        options.saveAccount($scope.accounts);
+        options.saveAccounts($scope.accounts);
     };
-    $scope.clearAccount = options.clearAccounts;
+    $scope.clearAccount = function() {
+        $scope.accounts = [];
+        options.clearAccounts();
+    };
 
     $scope.addAccountId = "";
     $scope.addAccountPassword = "";
@@ -16,6 +19,8 @@ angular.module('optionApp', ['twitSwitchApp'])
             'password': $scope.addAccountPassword
         };
         $scope.accounts.push(account);
+        $scope.addAccountId = "";
+        $scope.addAccountPassword = "";
     };
 })
 .factory('options', function() {
@@ -35,23 +40,35 @@ angular.module('optionApp', ['twitSwitchApp'])
 
     // アカウント情報の保存
     var saveAccounts = function(accounts) {
-        Storage.getLocal(Storage.accountsKey, accounts);
+        data = [];
+        angular.forEach(accounts, function(value, key) {
+            data.push({'id':value.id, 'password': value.password});
+        });
+        Storage.setLocal(Storage.accountsKey, data);
 
         // デスクトップ通知
-        webkitNotifications
-          .createNotification('../icon128.png', 'save', '保存しました')
-          .show();
+        var popup = webkitNotifications.createNotification('../icon128.png', 'save', '保存しました')
+        popup.show();
+
+        setTimeout(function() {
+            popup.cancel()
+        }, 2000);
 
         this.tabUpdate;
     };
 
     // アカウントのクリア
     var clearAccounts = function() {
-        Storage.clearLocal();
+        Storage.setLocal(Storage.accountsKey, []);
+
         // デスクトップ通知
-        webkitNotifications
-          .createNotification('../icon128.png', 'clear', '削除しました')
-          .show();
+        var popup = webkitNotifications.createNotification('../icon128.png', 'clear', '削除しました')
+        popup.show();
+
+        setTimeout(function() {
+            popup.cancel()
+        }, 2000);
+
         this.tabUpdate;
     };
 

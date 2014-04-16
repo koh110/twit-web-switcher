@@ -25,7 +25,7 @@
         <input class="accountId" type="text" placeholder="twitter id" value='{{account.id}}'/>
         <input class="accountPass" type="{{textOrPassword()}}" placeholder="password" value='{{account.password}}'/>
       </div>
-      <label for="passwordVisible">
+      <label for="passwordVisible" ng-show="accounts.length > 0">
         <input type="checkbox" id="passwordVisible" ng-model="passwordIsVisible">
         パスワードを表示する
       </label>
@@ -36,7 +36,7 @@
           アカウントを追加する
       </label>
       <input class="accountId" type="text" placeholder="twitter id" ng-model="addAccountId"/>
-      <input class="accountPass" type="text" placeholder="password" ng-model="addAccountPassword"/>
+      <input class="accountPass" type="password" placeholder="password" ng-model="addAccountPassword"/>
       <button class="btn" id="addAccountBtn" ng-click="addAccount()">+</button>
     </div>
 
