@@ -10,13 +10,6 @@ function getAccount(id) {
     var account = accounts.filter(function(item, index) {
         if (item.id === id) return true;
     });
-console.log(account[0]);
-    /*
-    account = {
-        id: id,
-        pass: accounts[id].password,
-    };
-    */
     return account[0];
 }
 

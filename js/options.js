@@ -1,5 +1,6 @@
 angular.module('optionApp', ['twitSwitchApp'])
 .controller('optionCtrl', function($scope, accounts, options) {
+    var baseAccounts = accounts;
     $scope.accounts = accounts;
 
     $scope.textOrPassword = options.textOrPassword;
@@ -13,14 +14,32 @@ angular.module('optionApp', ['twitSwitchApp'])
 
     $scope.addAccountId = "";
     $scope.addAccountPassword = "";
+
+    // アカウント追加
     $scope.addAccount = function() {
-        var account = {
-            'id': $scope.addAccountId,
-            'password': $scope.addAccountPassword
-        };
-        $scope.accounts.push(account);
-        $scope.addAccountId = "";
-        $scope.addAccountPassword = "";
+        var id = $scope.addAccountId;
+        // 重複チェック
+        var i = 0,len = $scope.accounts.length, isDuplicate = false;
+        for (i = 0; i < len; i++) {
+            if ($scope.accounts[i].id === id) {
+                isDuplicate = true;
+                break;
+            }
+        }
+
+        if (isDuplicate) {
+            alert("アカウント名が重複しています");
+        } else {
+            // アカウント追加
+            var account = {
+                'id': $scope.addAccountId,
+                'password': $scope.addAccountPassword
+            };
+            $scope.accounts.push(account);
+
+            $scope.addAccountId = "";
+            $scope.addAccountPassword = "";
+        }
     };
 })
 .factory('options', function() {
