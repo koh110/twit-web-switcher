@@ -1,7 +1,5 @@
 ﻿// ファイル読み込み終了時の処理
 $(document).ready(function(){
-    console.log("ready");
-    console.log(location.hostname);
 });
 
 // twitterのログアウト処理

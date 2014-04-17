@@ -16,68 +16,65 @@ function getAccount(id) {
 // ページ更新イベント
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (tab.status === 'complete') {
-        TabStatus.info = tab;
         switch (TabStatus.message) {
             case Message.logoutTwitter:
                 if (tab.url.indexOf(Const.twitterLogoutUrl) >= 0) {
-                    login(TabStatus.account.id);
+                    login(TabStatus.info, TabStatus.account.id);
                 }
             break;
             case Message.moveLoginPageTwitter:
                 if (tab.url.indexOf(Const.twitterLoginUrl) >= 0) {
-                    login(TabStatus.account.id);
+                    login(TabStatus.info, TabStatus.account.id);
                 }
             break;
             case Message.openTwitter:
                 if (tab.url.indexOf(Const.twitterUrl) >= 0) {
-                    login(TabStatus.account.id);
+                    login(TabStatus.info, TabStatus.account.id);
                 }
             break;
         }
     }
 });
 
-function login(accountId) {
+function login(tab, accountId) {
     // アカウント確認処理
     if (TabStatus.account === null || TabStatus.account === undefined) {
         TabStatus.account = getAccount(accountId);
     } else if (accountId !== TabStatus.account.id) {
         TabStatus.account = getAccount(accountId);
     }
-    var loginMessage = {message: Message.loginTwitter, account: TabStatus.account};
 
-    chrome.tabs.query({active: true}, function(tab) {
-        var targetTab = tab[0];
+    TabStatus.info = tab;
 
-        // 現在みているタブがtwitterのページでなければtwitterを開く
-        var reg = new RegExp(".*" + Const.twitterHost + ".*");
-        if (tab[0].url.search(reg)) {
-            createTwitterTab(function(tab) {
-                TabStatus.message = Message.openTwitter;
-            });
-        }
-
-        var port = chrome.tabs.connect(targetTab.id, {name: 'login'});
-        port.postMessage({message: Message.loginCheckTwitter});
-        port.onMessage.addListener(function(msg) {
-            switch(msg.message) {
-                // login check
-                case Message.loginCheckTwitter:
-                    if (msg.login === true) {
-                        TabStatus.message = Message.logoutTwitter;
-                        port.postMessage({message: Message.logoutTwitter});
-                    } else {
-                        TabStatus.message = Message.loginTwitter;
-                        port.postMessage(loginMessage);
-                    }
-                break;
-                // ページ遷移
-                case Message.moveLoginPageTwitter:
-                    TabStatus.message = Message.moveLoginPageTwitter;
-                    chrome.tabs.update(targetTab.id, {url: Const.twitterLoginUrl}, function(tab){});
-                break;
-            }
+    // 現在みているタブがtwitterのページでなければtwitterを開く
+    var reg = new RegExp(".*" + Const.twitterHost + ".*");
+    if (tab.url.search(reg)) {
+        createTwitterTab(function(newTab) {
+            TabStatus.message = Message.openTwitter;
+            TabStatus.info = newTab;
         });
+    }
+
+    var port = chrome.tabs.connect(tab.id, {name: 'login'});
+    port.postMessage({message: Message.loginCheckTwitter});
+    port.onMessage.addListener(function(msg) {
+        switch(msg.message) {
+            // login check
+            case Message.loginCheckTwitter:
+                if (msg.login === true) {
+                    TabStatus.message = Message.logoutTwitter;
+                    port.postMessage({message: Message.logoutTwitter});
+                } else {
+                    TabStatus.message = Message.loginTwitter;
+                    port.postMessage({message: Message.loginTwitter, account: TabStatus.account});
+                }
+            break;
+            // ページ遷移
+            case Message.moveLoginPageTwitter:
+                TabStatus.message = Message.moveLoginPageTwitter;
+                chrome.tabs.update(tab.id, {url: Const.twitterLoginUrl}, function(updateTab){});
+            break;
+        }
     });
 }
 
@@ -109,7 +106,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switch(request.message) {
         // login
         case Message.loginTwitter:
-            login(request.id);
+            chrome.tabs.query({active: true}, function(tab) {
+                login(tab[0], request.id);
+            });
         break;
         // logout
         case Message.logoutTwitter:
