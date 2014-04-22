@@ -1,19 +1,62 @@
-angular.module('optionApp', ['twitSwitchApp'])
+angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
 .controller('optionCtrl', function($scope, accounts, options) {
-    var baseAccounts = accounts;
+    var savedAccounts = accounts;
     $scope.accounts = accounts;
 
     $scope.textOrPassword = options.textOrPassword;
     $scope.saveAccount = function () {
         options.saveAccounts($scope.accounts);
+        savedAccounts = $scope.accounts;
     };
     $scope.clearAccount = function() {
         $scope.accounts = [];
         options.clearAccounts();
+        savedAccounts = $scope.accounts;
     };
 
+    // 追加アカウント用
     $scope.addAccountId = "";
     $scope.addAccountPassword = "";
+
+    // アカウントごとのモデル格納用
+    $scope.model = {
+        id: {},
+        password: {},
+    };
+
+    // アカウントの情報が保存時と変化しているかチェック
+    $scope.isChange = function(accountId) {
+        var i; len = savedAccounts.length, account = null;
+        for (i = 0; i < len; i++) {
+            if (savedAccounts[i].id === accountId) {
+                account = savedAccounts[i];
+                break;
+            }
+        }
+
+        var change = {id: false, password: false};
+        if (account !== null) {
+            if ($scope.model.id[accountId] !== account.id) {
+                change.id = true;
+            }
+            if ($scope.model.password[accountId] !== account.password) {
+                change.password = true;
+            }
+        }
+
+        return change;
+    }
+
+    // uiソート
+    $scope.sortableOptions = {
+        axis: 'y',
+        start: function(e, ui) {
+        },
+        update: function(e, ui) {
+        },
+        stop: function(e, ui) {
+        },
+    };
 
     // アカウント追加
     $scope.addAccount = function() {
@@ -40,6 +83,11 @@ angular.module('optionApp', ['twitSwitchApp'])
             $scope.addAccountId = "";
             $scope.addAccountPassword = "";
         }
+    };
+
+    // アカウント削除
+    $scope.removeAccount = function(index) {
+        $scope.accounts.splice(index, 1);
     };
 })
 .factory('options', function() {

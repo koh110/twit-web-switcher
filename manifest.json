@@ -28,7 +28,7 @@
                 "https://about.twitter.com/*"
             ],
             "js": [
-                "js/jquery.min.js",
+                "js/lib/jquery.min.js",
                 "js/content.js",
                 "js/global.js"
             ],
