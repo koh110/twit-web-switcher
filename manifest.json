@@ -9,7 +9,11 @@
     },
     "description": "Exchange Twitter account.",
     "background": {
-        "page": "background.html",
+        "scripts": [
+            "js/global.js",
+            "js/storage.js",
+            "js/background.js"
+        ],
         "persistent": false
     },
     "browser_action": {
