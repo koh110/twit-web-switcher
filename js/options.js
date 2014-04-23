@@ -1,12 +1,21 @@
 angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
 .controller('optionCtrl', function($scope, accounts, options) {
-    var savedAccounts = accounts;
     $scope.accounts = accounts;
 
     $scope.textOrPassword = options.textOrPassword;
     $scope.saveAccount = function () {
-        options.saveAccounts($scope.accounts);
-        savedAccounts = $scope.accounts;
+        var save = [];
+        // 現在値の適用
+        angular.forEach($scope.accounts, function(value, key) {
+            account = {
+                id: $scope.model.id[value.id],
+                password: $scope.model.password[value.id],
+            };
+            this.push(account);
+        }, save);
+        // 保存
+        options.saveAccounts(save);
+        $scope.accounts = save;
     };
     $scope.clearAccount = function() {
         $scope.accounts = [];
@@ -18,7 +27,7 @@ angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
     $scope.addAccountId = "";
     $scope.addAccountPassword = "";
 
-    // アカウントごとのモデル格納用
+    // アカウントごとの現在値格納用
     $scope.model = {
         id: {},
         password: {},
@@ -26,20 +35,22 @@ angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
 
     // アカウントの情報が保存時と変化しているかチェック
     $scope.isChange = function(accountId) {
-        var i; len = savedAccounts.length, account = null;
+        var i; len = $scope.accounts.length, account = null;
         for (i = 0; i < len; i++) {
-            if (savedAccounts[i].id === accountId) {
-                account = savedAccounts[i];
+            if ($scope.accounts[i].id === accountId) {
+                account = $scope.accounts[i];
                 break;
             }
         }
 
         var change = {id: false, password: false};
         if (account !== null) {
-            if ($scope.model.id[accountId] !== account.id) {
+            var currentId = $scope.model.id[accountId];
+            var currentPassword = $scope.model.password[accountId];
+            if (currentId !== account.id) {
                 change.id = true;
             }
-            if ($scope.model.password[accountId] !== account.password) {
+            if (currentPassword !== account.password) {
                 change.password = true;
             }
         }
@@ -50,12 +61,6 @@ angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
     // uiソート
     $scope.sortableOptions = {
         axis: 'y',
-        start: function(e, ui) {
-        },
-        update: function(e, ui) {
-        },
-        stop: function(e, ui) {
-        },
     };
 
     // アカウント追加
@@ -107,11 +112,7 @@ angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
 
     // アカウント情報の保存
     var saveAccounts = function(accounts) {
-        data = [];
-        angular.forEach(accounts, function(value, key) {
-            data.push({'id':value.id, 'password': value.password});
-        });
-        Storage.setLocal(Storage.accountsKey, data);
+        Storage.setLocal(Storage.accountsKey, accounts);
 
         // デスクトップ通知
         var popup = webkitNotifications.createNotification('../icon128.png', 'save', '保存しました')
@@ -119,7 +120,7 @@ angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
 
         setTimeout(function() {
             popup.cancel()
-        }, 2000);
+        }, 1800);
 
         this.tabUpdate;
     };
@@ -134,7 +135,7 @@ angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
 
         setTimeout(function() {
             popup.cancel()
-        }, 2000);
+        }, 1800);
 
         this.tabUpdate;
     };
