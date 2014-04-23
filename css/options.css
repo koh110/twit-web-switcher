@@ -19,7 +19,7 @@
 }
 
 #accounts .accountData th input.change {
-    border-color: red;
+    border: solid #f89e00 2px;
 }
 
 #accounts .accountData th input.accountId {
