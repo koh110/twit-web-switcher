@@ -1,38 +1,58 @@
 /* option用css */
 #siteArea{
-	margin:auto;
-	padding:10px;
-	width:550px;
+   margin: auto;
+   padding: 10px;
+   width: 550px;
 }
 
-#headerArea{
-	/*
-	margin:10px;
-	padding:10px;
-	border: 1px solid #C3D9FF;
-	*/
+/* account表示エリア */
+#accounts .accountData {
+    margin-bottom: 5px;
 }
 
-#accountArea{
-	/*
-	margin:10px;
-	border: 1px solid #C3D9FF;
-	*/
+#accounts .accountData th i:first-child {
+    margin-left: 8px;
+    margin-right: 10px;
+    font-size: 1.5em;
+    top: 0.3em;
+    color: #428bca;
 }
 
-div.accountRow{
-	text-align:center;
-	/*margin:5px;*/
-	/*padding:5px;*/
-	/*background-color: #d9d9ff;*/
+#accounts .accountData th input.change {
+    border: solid #f89e00 2px;
 }
 
-.accountContents{
-	margin:5px;
+#accounts .accountData th input.accountId {
+    font-weight: normal;
+    margin-right: 5px;
+}
+#accounts .accountData th input.accountPass {
+    font-weight: normal;
+    margin-right: 10px;
+}
+#accounts .accountData th i.delbtn {
+    visibility: hidden;
+}
+#accounts .accountData:hover th i.delbtn {
+    visibility: visible;
 }
 
-#buttonArea{
-	/*margin:10px;*/
-	/*padding:5px;*/
-	/*border: 1px solid #C3D9FF;*/
+#accounts .passwordVisible {
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+/* account追加エリア */
+#addAccount .accountId {
+    margin-right: 5px;
+}
+.form-group .accountPass {
+    margin-right: 5px;
+}
+button#addAccountBtn {
+    margin-left: 5px;
+}
+
+button#saveBtn {
+    margin-right: 10px;
 }

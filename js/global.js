@@ -1,27 +1,43 @@
 //================================================
 // 全体で使う変数などを設定する
 //================================================
+// const
+var Const = (function() {
+
+});
 
 // twitterのurl
-const G_twitterURL = "https://twitter.com/";
+Const.twitterUrl = "https://twitter.com/";
+Const.twitterLoginUrl = "https://twitter.com/login";
+Const.twitterLogoutUrl = "https://about.twitter.com/";
+Const.twitterHost = "twitter.com";
 
 //------------------------------------------------
 // Message
 //------------------------------------------------
-// twitterpageを開く
-const G_twitterOpenMessage = "twitterOpen";
-// login用message
-const G_twitterLoginMessage = "twitterLogin";
-// logout用message
-const G_twitterLogoutMessage = "twitterLogout";
-// loginチェック用message
-const G_twitterLoginCheckMessage = "twitterLoginCheck";
+var Message = (function() {
 
-// content scriptファイルの読み込み完了時のmessage
-const G_documentReadyMessage = "documentReady";
+});
+Message = {
+    // twitterpageを開く
+    openTwitter: "twitterOpenMessage",
 
-//------------------------------------------------
-// localStorage
-//------------------------------------------------
-// アカウント用key
-const G_accountKey = "account";
+    // login用message
+    loginTwitter: "twitterLoginMessage",
+
+    // logout用message
+    logoutTwitter: "twitterLogoutMessage",
+    // logout終了
+    finishLogoutTwitter: "twitterLogoutFinishMessage",
+
+    // loginチェック用message
+    loginCheckTwitter: "twitterLoginCheckMessage",
+
+    // twitterのログインページに遷移したmessage
+    moveLoginPageTwitter: "moveLoginPageTwitterMessage",
+
+    // optionページを開く
+    openOptionPage: "openOptionPageMessage",
+}
+
+

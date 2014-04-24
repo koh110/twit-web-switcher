@@ -1,156 +1,148 @@
-// ファイル読み込み終了時の処理
-$(document).ready(function(){
-	// ボタンにイベントを追加
-	$("#saveBtn").click(function(){
-		storageSave();
-		webkitNotifications.createNotification('../icon128.png', 'save', '保存しました').show();
-		chrome.tabs.getSelected(null,function(tab){
-			// tabを更新する
-			chrome.tabs.update(tab.id,{url:"options.html"});
-		});
-	});
-	$("#clearBtn").click(function(){
-		storageClear();
-		webkitNotifications.createNotification('../icon128.png', 'clear', '削除しました').show();
-		chrome.tabs.getSelected(null,function(tab){
-			// tabを更新する
-			chrome.tabs.update(tab.id,{url:"options.html"});
-		});
-	});
+angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
+.controller('optionCtrl', function($scope, accounts, options) {
+    $scope.accounts = accounts;
 
-	// アカウント情報をセットエリアを表示する
-	showAccountSetArea();
+    $scope.textOrPassword = options.textOrPassword;
+    $scope.saveAccount = function () {
+        var save = [];
+        // 現在値の適用
+        angular.forEach($scope.accounts, function(value, key) {
+            account = {
+                id: $scope.model.id[value.id],
+                password: $scope.model.password[value.id],
+            };
+            this.push(account);
+        }, save);
+        // 保存
+        options.saveAccounts(save);
+        $scope.accounts = save;
+    };
+    $scope.clearAccount = function() {
+        $scope.accounts = [];
+        options.clearAccounts();
+        savedAccounts = $scope.accounts;
+    };
 
-	// localStorageのdataをtextboxに配置
-	restore();
+    // 追加アカウント用
+    $scope.addAccountId = "";
+    $scope.addAccountPassword = "";
+
+    // アカウントごとの現在値格納用
+    $scope.model = {
+        id: {},
+        password: {},
+    };
+
+    // アカウントの情報が保存時と変化しているかチェック
+    $scope.isChange = function(accountId) {
+        var i; len = $scope.accounts.length, account = null;
+        for (i = 0; i < len; i++) {
+            if ($scope.accounts[i].id === accountId) {
+                account = $scope.accounts[i];
+                break;
+            }
+        }
+
+        var change = {id: false, password: false};
+        if (account !== null) {
+            var currentId = $scope.model.id[accountId];
+            var currentPassword = $scope.model.password[accountId];
+            if (currentId !== account.id) {
+                change.id = true;
+            }
+            if (currentPassword !== account.password) {
+                change.password = true;
+            }
+        }
+
+        return change;
+    }
+
+    // uiソート
+    $scope.sortableOptions = {
+        axis: 'y',
+    };
+
+    // アカウント追加
+    $scope.addAccount = function() {
+        var id = $scope.addAccountId;
+        // 重複チェック
+        var i = 0,len = $scope.accounts.length, isDuplicate = false;
+        for (i = 0; i < len; i++) {
+            if ($scope.accounts[i].id === id) {
+                isDuplicate = true;
+                break;
+            }
+        }
+
+        if (isDuplicate) {
+            alert("アカウント名が重複しています");
+        } else {
+            // アカウント追加
+            var account = {
+                'id': $scope.addAccountId,
+                'password': $scope.addAccountPassword
+            };
+            $scope.accounts.push(account);
+
+            $scope.addAccountId = "";
+            $scope.addAccountPassword = "";
+        }
+    };
+
+    // アカウント削除
+    $scope.removeAccount = function(index) {
+        $scope.accounts.splice(index, 1);
+    };
+})
+.factory('options', function() {
+    // tab更新
+    var tabUpdate = function() {
+        chrome.tabs.getSelected(null,function(tab){
+            chrome.tabs.update(tab.id, {url:"options.html"});
+        });
+    };
+
+    // パスワードを表示するフラグ
+    var passwordIsVisible = false;
+    // inputタグのタイプをtextかpasswordか選択する関数
+    var textOrPassword = function() {
+      return this.passwordIsVisible ? 'text' : 'password';
+    };
+
+    // アカウント情報の保存
+    var saveAccounts = function(accounts) {
+        Storage.setLocal(Storage.accountsKey, accounts);
+
+        // デスクトップ通知
+        var popup = webkitNotifications.createNotification('../icon128.png', 'save', '保存しました')
+        popup.show();
+
+        setTimeout(function() {
+            popup.cancel()
+        }, 1800);
+
+        this.tabUpdate;
+    };
+
+    // アカウントのクリア
+    var clearAccounts = function() {
+        Storage.setLocal(Storage.accountsKey, []);
+
+        // デスクトップ通知
+        var popup = webkitNotifications.createNotification('../icon128.png', 'clear', '削除しました')
+        popup.show();
+
+        setTimeout(function() {
+            popup.cancel()
+        }, 1800);
+
+        this.tabUpdate;
+    };
+
+    return {
+        'textOrPassword': textOrPassword,
+        'saveAccounts': saveAccounts,
+        'clearAccounts': clearAccounts,
+    };
 });
-
-// 登録可能アカウント数
-const g_accountNum = 5;
-
-// 保存処理
-function storageSave(){
-	// アカウントのidを保持する配列
-	var accountArray = new Array();
-	// 前回のアカウント情報を取得
-	var eveAccountArray = getLocalStorage(G_accountKey);
-	// アカウント情報の保存
-	for(var i=0;i<g_accountNum;i++){
-		// idとpassを取得
-		var accountId = $("#ID"+i).attr("value");
-		var accountPass = $("#PASS"+i).attr("value");
-		if(accountId == ""){
-			continue;
-		}
-		// アカウントidを配列に追加
-		accountArray.push(accountId);			
-		// json形式に変換
-		var account = {
-			id:accountId,
-			pass:accountPass
-		};
-		// localStorageに保存
-		setLocalStorage(accountId,account);
-	}
-	// localStorageにアカウント一覧情報を追加
-	setLocalStorage(G_accountKey,accountArray);
-
-	if(eveAccountArray!=null){
-		// 前回からの差分のアカウントをstorageから削除
-		var diffAccountArray= arrayDiff(eveAccountArray,accountArray);
-		for(i=0;i<diffAccountArray.length;i++){
-			deleteLocalStorage(diffAccountArray[i]);
-		}
-	}
-}
-
-// アカウント情報をクリア
-function storageClear(){
-	clearLocalStorage();
-}
-
-// 配列の差分
-// @return (array_0 - array_1)の差分配列
-function arrayDiff(array_0,array_1){
-	var result,tmp_f;
-	result = new Array();
-	for(var i=0;i<array_0.length;i++){
-		tmp_f = true;
-		for (var ii = 0; ii < array_1.length; ii++) {
-			if (array_0[i] === array_1[ii]) {
-				tmp_f = false;
-				break;
-			}
-		}
-		if (tmp_f) {
-			result.push(array_0[i]);
-		}
-	}
-	return result;
-}
-
-// アカウント情報をセットするエリア
-function showAccountSetArea(){
-	// accountAreaにaccount数個のdivタグを生成
-	for(var i=0;i<g_accountNum;i++){
-		var divTag = document.createElement("div");
-		divTag.id = "account"+i;
-		divTag.setAttribute("class", "accountRow");
-		$('div#accountArea').append(divTag);
-	}
-
-	// アカウント情報要素の配列
-	var objectArray = new Array(g_accountNum);
-
-	for(i=0;i<g_accountNum;i++){
-		// 配列用オブジェクト
-		var object = new Object();
-
-		// id用のinput area
-		var objectId = document.createElement("input");
-		objectId.id = "ID"+i;
-		objectId.setAttribute("class","accountContents");
-		objectId.type = "text";
-		objectId.placeholder = "twitter id";
-		object.id = objectId;	// 配列追加用objectに追加
-
-		// pass用のinput area
-		var objectPass = document.createElement("input");
-		objectPass.id = "PASS"+i;
-		objectPass.setAttribute("class","accountContents");
-		objectPass.type = "password";
-		objectPass.placeholder = "password";
-		object.pass = objectPass;	// 配列追加用objectに追加
-
-		// 要素配列に追加
-		objectArray[i] = object;
-	}
-
-	// css情報の取得
-	//var accountAreaData = $("#accountArea");
-	//console.log(accountAreaData.css( "border-left-color" ));
-	// エリアにアカウント情報内容を追加
-	for(i=0;i<g_accountNum;i++){
-		// objectを末尾に追加
-		$("#account"+i)
-				.append("<strong class='accountContents'>"+(i+1)+".</storong>")
-				.append(objectArray[i].id)
-				.append(objectArray[i].pass);
-	}
-}
-
-// ローカルストレージに保存された内容の読み出し
-function restore(){
-	// localStorageからアカウント情報をJSON形式で取得する
-	var accountArray=getLocalStorage(G_accountKey);
-	// localStorageにアカウントデータがある時
-	if(accountArray!=null){
-		for(var i=0;i<accountArray.length;++i){
-			var account = accountArray[i];
-			//console.log(account);
-			var accountValue = getLocalStorage(account);
-			$("#ID"+i).val(accountValue.id);
-			$("#PASS"+i).val(accountValue.pass);
-		}
-	}
-}
