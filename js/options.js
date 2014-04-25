@@ -56,7 +56,7 @@ angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
         }
 
         return change;
-    }
+    };
 
     // uiソート
     $scope.sortableOptions = {
@@ -81,7 +81,7 @@ angular.module('optionApp', ['twitSwitchApp', 'ui.sortable'])
             // アカウント追加
             var account = {
                 'id': $scope.addAccountId,
-                'password': $scope.addAccountPassword
+                'password': $scope.addAccountPassword,
             };
             $scope.accounts.push(account);
 
