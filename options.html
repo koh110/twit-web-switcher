@@ -5,11 +5,11 @@
     <!--jsファイルの読み込み-->
     <script type="text/javascript" src="js/lib/jquery.min.js"></script>
     <script type="text/javascript" src="js/lib/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/lib/angular.min.js"></script>
+    <script type="text/javascript" src="js/lib/angular.js"></script>
+    <script type="text/javascript" src="js/lib/angularSortable.js"></script>
     <script type="text/javascript" src="js/global.js"></script>
     <script type="text/javascript" src="js/storage.js"></script>
     <script type="text/javascript" src="js/angularApp.js"></script>
-    <script type="text/javascript" src="js/angularSortable.js"></script>
     <script type="text/javascript" src="js/options.js"></script>
     <!-- cssファイルの読み込み-->
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
@@ -51,7 +51,7 @@
             <div class="panel-body">
                 <h4>アカウントを追加する</h4>
                 <div class="form-group">
-                    <form name="addAccount">
+                    <form>
                         <input class="accountId form-control" type="text" placeholder="twitter id" ng-model="addAccountId" required/>
                         <input class="accountPass form-control" type="password" placeholder="password" ng-model="addAccountPassword" required/>
                         <button class="btn" id="addAccountBtn" ng-disabled="addAccount.$invalid" ng-click="addAccount()">+</button>
