@@ -1,7 +1,7 @@
 {
     "name": "Twit Web Switcher",
     "manifest_version": 2,
-    "version": "1.2",
+    "version": "1.2.2",
     "description": "twitterアカウントの切り替え",
     "icons": {
         "16":"icon16.png",
