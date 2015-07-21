@@ -31,8 +31,21 @@
               <tr ng-repeat="account in accounts" class="accountData animate-repeat">
                 <th>
                   <i class="glyphicon glyphicon-align-justify"></i>
-                  <input ng-init="model.id[account.id]=account.id" ng-model="model.id[account.id]" class="accountId form-control ng-class: isChange(account.id).id ? 'change' : '';" type="text" placeholder="twitter id"/>
-                  <input ng-init="model.password[account.id]=account.password" ng-model="model.password[account.id]" class="accountPass form-control ng-class: isChange(account.id).password ? 'change' : '';" type="{{textOrPassword()}}" placeholder="password" value='{{account.password}}'/>
+                  <input
+                    ng-model="account.id"
+                    ng-change="updateAccount('id', account)"
+                    ng-class="{change: isChange(account).id}"
+                    class="accountId form-control"
+                    type="text"
+                    placeholder="twitter id"/>
+                  <input
+                    ng-model="account.password"
+                    ng-change="updateAccount('password', account)"
+                    ng-class="{change: isChange(account).password}"
+                    class="accountPass form-control"
+                    type="{{textOrPassword()}}"
+                    placeholder="password"
+                    value='{{account.password}}'/>
                   <i class="delbtn glyphicon glyphicon-trash" ng-click="removeAccount($index)"></i>
                 </th>
               </tr>
@@ -53,8 +66,8 @@
         <h4>アカウントを追加する</h4>
         <div class="form-group">
           <form>
-            <input class="accountId form-control" type="text" placeholder="twitter id" ng-model="addAccountId" required/>
-            <input class="accountPass form-control" type="password" placeholder="password" ng-model="addAccountPassword" required/>
+            <input class="accountId form-control" type="text" placeholder="twitter id" ng-model="add.id" required/>
+            <input class="accountPass form-control" type="password" placeholder="password" ng-model="add.password" required/>
             <button class="btn" id="addAccountBtn" ng-disabled="addAccount.$invalid" ng-click="addAccount()">+</button>
           </form>
         </div>

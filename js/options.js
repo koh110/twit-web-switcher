@@ -2,103 +2,85 @@
   'use strict';
 
   angular.module('OptionApp', ['TwitSwitchApp', 'ui.sortable'])
-  .controller('OptionCtrl', function($scope, AccountService, OptionService) {
-    $scope.accounts = AccountService.accounts;
-
-    $scope.textOrPassword = OptionService.textOrPassword;
-    $scope.saveAccount = function () {
-      var save = [];
-      // 現在値の適用
-      angular.forEach($scope.accounts, function(value, key) {
-        var account = {
-          id: $scope.model.id[value.id],
-          password: $scope.model.password[value.id],
-        };
-        this.push(account);
-      }, save);
-      // 保存
-      OptionService.saveAccounts(save);
-      $scope.accounts = save;
-    };
-    $scope.clearAccount = function() {
-      $scope.accounts = [];
-      OptionService.clearAccounts();
-    };
-
-    // 追加アカウント用
-    $scope.addAccountId = "";
-    $scope.addAccountPassword = "";
-
-    // アカウントごとの現在値格納用
-    $scope.model = {
-      id: {},
-      password: {},
-    };
-
-    // アカウントの情報が保存時と変化しているかチェック
-    $scope.isChange = function(accountId) {
-      var i = 0, len = $scope.accounts.length, account = null;
-      for (; i < len; i++) {
-        if ($scope.accounts[i].id === accountId) {
-          account = $scope.accounts[i];
-          break;
-        }
-      }
-
-      var change = {id: false, password: false};
-      if (account !== null) {
-        var currentId = $scope.model.id[accountId];
-        var currentPassword = $scope.model.password[accountId];
-        if (currentId !== account.id) {
-          change.id = true;
-        }
-        if (currentPassword !== account.password) {
-          change.password = true;
-        }
-      }
-
-      return change;
-    };
+  .controller('OptionCtrl', ['$scope', 'OptionService', function($scope, OptionService) {
+    $scope.accounts = OptionService.accounts;
 
     // uiソート
     $scope.sortableOptions = {
       xis: 'y',
+      update: function(e, ui) {
+        OptionService.accounts = $scope.accounts;
+      },
+    };
+
+    $scope.textOrPassword = OptionService.textOrPassword;
+    $scope.updateAccount = OptionService.updateAccount;
+    $scope.isChange = OptionService.isUpdatedAccount;
+    $scope.saveAccount = OptionService.saveAccounts;
+    $scope.clearAccount = OptionService.clearAccounts;
+
+    // 追加アカウント用
+    $scope.add = {
+      id: '',
+      password: ''
     };
 
     // アカウント追加
     $scope.addAccount = function() {
-      var id = $scope.addAccountId;
-      // 重複チェック
-      var i = 0, len = $scope.accounts.length, isDuplicate = false;
-      for (; i < len; i++) {
-        if ($scope.accounts[i].id === id) {
-          isDuplicate = true;
-          break;
-        }
-      }
-
-      if (isDuplicate) {
-        alert("アカウント名が重複しています");
-      } else {
-        // アカウント追加
-        var account = {
-          'id': $scope.addAccountId,
-          'password': $scope.addAccountPassword,
-        };
-        $scope.accounts.push(account);
-
-        $scope.addAccountId = "";
-        $scope.addAccountPassword = "";
-      }
+      OptionService.addAccount($scope.add.id, $scope.add.password);
+      $scope.accounts = OptionService.accounts;
+      $scope.add.id = '';
+      $scope.add.password = '';
     };
 
     // アカウント削除
-    $scope.removeAccount = function(index) {
-      $scope.accounts.splice(index, 1);
-    };
-  })
-  .factory('OptionService', function() {
+    $scope.removeAccount = OptionService.removeAccount;
+  }])
+  .factory('OptionService', ['AccountService', function(AccountService) {
     var Storage = window.TwitWebSwitcher.Storage;
+
+    var accounts = AccountService.accounts.map(function(elem, index, array) {
+      elem.update = {
+        id: false,
+        password: false
+      };
+      return elem;
+    });
+
+    // アカウントが更新されたら更新フラグを建てる
+    // param 'id' or 'password'
+    var updateAccount = function(param, account) {
+      account.update[param] = true;
+    };
+    // アカウントの情報が保存時と変化しているかチェック
+    var isUpdatedAccount = function(account) {
+      return account.update;
+    };
+    // アカウントの追加
+    var addAccount = function(id, password) {
+      // 重複チェック
+      var duplicate = accounts.filter(function(elem, index, array) {
+        if (elem.id === id) {
+          return elem;
+        }
+      });
+      if (duplicate.length > 0) {
+        alert("アカウント名が重複しています");
+        return;
+      }
+      // アカウント追加
+      accounts.push({
+        id: id,
+        password: password,
+        update: {
+          id: true,
+          password: true
+        }
+      });
+    };
+    var removeAccount = function(index) {
+      accounts.splice(index, 1);
+    };
 
     // tab更新
     var tabUpdate = function() {
@@ -115,7 +97,7 @@
     };
 
     // アカウント情報の保存
-    var saveAccounts = function(accounts) {
+    var saveAccounts = function() {
       Storage.setLocal(Storage.accountsKey, accounts);
 
       // デスクトップ通知
@@ -153,9 +135,14 @@
     };
 
     return {
+      accounts: accounts,
+      updateAccount: updateAccount,
+      addAccount: addAccount,
+      removeAccount: removeAccount,
+      isUpdatedAccount: isUpdatedAccount,
       textOrPassword: textOrPassword,
       saveAccounts: saveAccounts,
       clearAccounts: clearAccounts,
     };
-  });
+  }]);
 })();
