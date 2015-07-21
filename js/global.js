@@ -1,24 +1,21 @@
-//================================================
-// 全体で使う変数などを設定する
-//================================================
-// const
-var Const = (function() {
+(function() {
+  'use strict';
 
-});
+  //================================================
+  // 全体で使う変数などを設定する
+  //================================================
+  var Const = {
+    // twitterのurl
+    twitterUrl: 'https://twitter.com/',
+    twitterLoginUrl: 'https://twitter.com/login',
+    twitterLogoutUrl: 'https://about.twitter.com/',
+    twitterHost: 'twitter.com'
+  };
 
-// twitterのurl
-Const.twitterUrl = "https://twitter.com/";
-Const.twitterLoginUrl = "https://twitter.com/login";
-Const.twitterLogoutUrl = "https://about.twitter.com/";
-Const.twitterHost = "twitter.com";
-
-//------------------------------------------------
-// Message
-//------------------------------------------------
-var Message = (function() {
-
-});
-Message = {
+  //------------------------------------------------
+  // Message
+  //------------------------------------------------
+  var Message = {
     // twitterpageを開く
     openTwitter: "twitterOpenMessage",
 
@@ -38,6 +35,11 @@ Message = {
 
     // optionページを開く
     openOptionPage: "openOptionPageMessage",
-}
+  };
 
-
+  if (!window.TwitWebSwitcher) {
+    window.TwitWebSwitcher = {};
+  }
+  window.TwitWebSwitcher.Const = Const;
+  window.TwitWebSwitcher.Message = Message;
+})();

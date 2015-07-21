@@ -1,71 +1,71 @@
 <!DOCTYPE html>
-<html lang="ja" ng-app="optionApp">
+<html lang="ja" ng-app="OptionApp">
 <head>
-    <meta charset="UTF-8">
-    <title>option page</title>
-    <!--jsファイルの読み込み-->
-    <script type="text/javascript" src="js/lib/jquery.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/lib/angular.min.js"></script>
-    <script type="text/javascript" src="js/lib/angularSortable.js"></script>
-    <script type="text/javascript" src="js/global.js"></script>
-    <script type="text/javascript" src="js/storage.js"></script>
-    <script type="text/javascript" src="js/angularApp.js"></script>
-    <script type="text/javascript" src="js/options.js"></script>
-    <!-- cssファイルの読み込み-->
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/options.css">
+  <meta charset="UTF-8">
+  <title>option page</title>
+  <!--jsファイルの読み込み-->
+  <script type="text/javascript" src="js/lib/jquery.min.js"></script>
+  <script type="text/javascript" src="js/lib/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="js/lib/angular.min.js"></script>
+  <script type="text/javascript" src="js/lib/angularSortable.js"></script>
+  <script type="text/javascript" src="js/global.js"></script>
+  <script type="text/javascript" src="js/storage.js"></script>
+  <script type="text/javascript" src="js/angularApp.js"></script>
+  <script type="text/javascript" src="js/options.js"></script>
+  <!-- cssファイルの読み込み-->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/options.css">
 </head>
-<body ng-controller="optionCtrl">
-    <div id="siteArea">
-        <!-- headerエリア -->
-        <div id="headerArea" class="well"><h4>アカウント切り替え設定</h4></div>
+<body ng-controller="OptionCtrl">
+  <div id="siteArea">
+    <!-- headerエリア -->
+    <div id="headerArea" class="well"><h4>アカウント切り替え設定</h4></div>
 
-        <!-- アカウント設定エリア -->
-        <div id="accounts" class="panel panel-default">
-            <div class="panel-body">
-                <div class="form-inline">
-                    <h4>アカウント一覧</h4>
-                    <table class="table table-hover">
-                        <tbody ui-sortable="sortableOptions" ng-model="accounts">
-                            <tr ng-repeat="account in accounts" class="accountData animate-repeat">
-                                <th>
-                                    <i class="glyphicon glyphicon-align-justify"></i>
-                                    <input ng-init="model.id[account.id]=account.id" ng-model="model.id[account.id]" class="accountId form-control ng-class: isChange(account.id).id ? 'change' : '';" type="text" placeholder="twitter id"/>
-                                    <input ng-init="model.password[account.id]=account.password" ng-model="model.password[account.id]" class="accountPass form-control ng-class: isChange(account.id).password ? 'change' : '';" type="{{textOrPassword()}}" placeholder="password" value='{{account.password}}'/>
-                                    <i class="delbtn glyphicon glyphicon-trash" ng-click="removeAccount($index)"></i>
-                                </th>
-                            </tr>
-                        <tbody>
-                    </table>
-                </div>
-                <div class="passwordVisible" ng-show="accounts.length > 0">
-                    <label class="checkbox-inline">
-                        <input type="checkbox" id="passwordVisible" ng-model="passwordIsVisible">パスワードを表示する
-                    </label>
-                </div>
-            </div>
+    <!-- アカウント設定エリア -->
+    <div id="accounts" class="panel panel-default">
+      <div class="panel-body">
+        <div class="form-inline">
+          <h4>アカウント一覧</h4>
+          <table class="table table-hover">
+            <tbody ui-sortable="sortableOptions" ng-model="accounts">
+              <tr ng-repeat="account in accounts" class="accountData animate-repeat">
+                <th>
+                  <i class="glyphicon glyphicon-align-justify"></i>
+                  <input ng-init="model.id[account.id]=account.id" ng-model="model.id[account.id]" class="accountId form-control ng-class: isChange(account.id).id ? 'change' : '';" type="text" placeholder="twitter id"/>
+                  <input ng-init="model.password[account.id]=account.password" ng-model="model.password[account.id]" class="accountPass form-control ng-class: isChange(account.id).password ? 'change' : '';" type="{{textOrPassword()}}" placeholder="password" value='{{account.password}}'/>
+                  <i class="delbtn glyphicon glyphicon-trash" ng-click="removeAccount($index)"></i>
+                </th>
+              </tr>
+            <tbody>
+          </table>
         </div>
-
-        <!-- アカウント追加 -->
-        <div id="addAccount" class="panel panel-default form-inline">
-            <div class="panel-body">
-                <h4>アカウントを追加する</h4>
-                <div class="form-group">
-                    <form>
-                        <input class="accountId form-control" type="text" placeholder="twitter id" ng-model="addAccountId" required/>
-                        <input class="accountPass form-control" type="password" placeholder="password" ng-model="addAccountPassword" required/>
-                        <button class="btn" id="addAccountBtn" ng-disabled="addAccount.$invalid" ng-click="addAccount()">+</button>
-                    </form>
-                </div>
-            </div>
+        <div class="passwordVisible" ng-show="accounts.length > 0">
+          <label class="checkbox-inline">
+            <input type="checkbox" id="passwordVisible" ng-model="passwordIsVisible">パスワードを表示する
+          </label>
         </div>
-
-        <!-- buttonエリア -->
-        <div id="buttonArea" class="well">
-            <button id="saveBtn" class="btn btn-lg btn-primary" ng-click="saveAccount()">save</button>
-            <button id="clearBtn" class="btn btn-lg" ng-click="clearAccount()">clear</button>
-        </div>
+      </div>
     </div>
+
+    <!-- アカウント追加 -->
+    <div id="addAccount" class="panel panel-default form-inline">
+      <div class="panel-body">
+        <h4>アカウントを追加する</h4>
+        <div class="form-group">
+          <form>
+            <input class="accountId form-control" type="text" placeholder="twitter id" ng-model="addAccountId" required/>
+            <input class="accountPass form-control" type="password" placeholder="password" ng-model="addAccountPassword" required/>
+            <button class="btn" id="addAccountBtn" ng-disabled="addAccount.$invalid" ng-click="addAccount()">+</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- buttonエリア -->
+    <div id="buttonArea" class="well">
+      <button id="saveBtn" class="btn btn-lg btn-primary" ng-click="saveAccount()">save</button>
+      <button id="clearBtn" class="btn btn-lg" ng-click="clearAccount()">clear</button>
+    </div>
+  </div>
 </body>
 </html>
