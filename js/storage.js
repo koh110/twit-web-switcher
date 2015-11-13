@@ -12,7 +12,7 @@
     // localStorageにJSON型でデータを保存する
     // @param key storageのkey
     // @param value storageに保存されるデータ内容
-    setLocal: function(key,value) {
+    setLocal: function(key, value) {
       localStorage[key] = JSON.stringify(value);
     },
 
@@ -37,7 +37,7 @@
         return null;
       }
       return JSON.parse(result);
-    },
+    }
   };
 
   if (!window.TwitWebSwitcher) {

@@ -16,6 +16,7 @@
     "quotes": [2, "single"],
     "indent": [2, 2],
     "comma-style": [2, "last"],
+    "func-style": [2, "expression"],
     "padded-blocks": [2, "never"],
     "space-before-blocks": [2, "always"],
     "space-before-function-paren": [2, "never"],

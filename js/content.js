@@ -1,58 +1,54 @@
 (function() {
   'use strict';
 
-console.log(window.TwitWebSwitcher);
+  var Const = window.TwitWebSwitcher.Const;
   var Message = window.TwitWebSwitcher.Message;
 
-  // twitterのログアウト処理
-  function twitterLogoutAction() {
-    $('.signout-form').submit();
-  }
-
-  // twitterのログイン処理
-  // @param id twitterのid
-  // @param pass twitterのpass
-  function twitterLoginAction(id, pass) {
-    if (location.href === 'https://twitter.com/login') {
-      var target = $('.clearfix.signin.js-signin');
-      target.find('.js-username-field').val(id);
-      target.find('.js-password-field').val(pass);
-      target.find('.subchck').find('input').click();
-      target.find('.submit').click();
-    } else {
-      $('#signin-email').val(id);
-      $('#signin-password').val(pass);
-      $('button.submit.flex-table-btn.js-submit').click();
-    }
-  }
-
-  // ログイン状態の確認
-  // @return ログアウト状態の時true
-  function isLogin() {
-    // signout-buttonが存在すれば
-    if ($("#signout-button").size() === 0) {
-      return false;
-    } else {
+  var TwitterCtrl = {
+    // twitterのログアウト処理
+    logout: function() {
+      //location.href = Const.twitterLogoutUrl;
+      $('#signout-button').click();
+      //$('form buttons .primary-btn').click();
+    },
+    // twitterのログイン処理
+    // @param id twitterのid
+    // @param pass twitterのpass
+    login: function(id, password) {
+      var form = null;
+      $('form').each(function() {
+        var thisElem = $(this);
+        if (thisElem.attr('action') === 'https://twitter.com/sessions') {
+          form = thisElem;
+        }
+      });
+      if (form) {
+        form.find('#signin-email').val(id);
+        form.find('#signin-password').val(password);
+        form.submit();
+      }
+    },
+    // ログイン状態の確認
+    // @return ログアウト状態の時true
+    isLogin: function() {
+      if ($('#signout-button').size() === 0) {
+        return false;
+      }
       return true;
     }
-  }
+  };
 
   chrome.runtime.onConnect.addListener(function(port) {
     port.onMessage.addListener(function(msg) {
       switch(msg.message) {
         case Message.logoutTwitter:
-          twitterLogoutAction();
+          TwitterCtrl.logout();
         break;
         case Message.loginTwitter:
-          if (location.hostname === 'twitter.com') {
-            twitterLoginAction(msg.account.id, msg.account.password);
-          } else {
-            // loginできるホスト名じゃない時は遷移させる
-            port.postMessage({message: Message.moveLoginPageTwitter});
-          }
+          TwitterCtrl.login(msg.account.id, msg.account.password);
         break;
         case Message.loginCheckTwitter:
-          port.postMessage({message: msg.message, login: isLogin()});
+          port.postMessage({message: msg.message, login: TwitterCtrl.isLogin()});
         break;
       }
     });
@@ -63,10 +59,15 @@ console.log(window.TwitWebSwitcher);
     // messageの内容によって処理
     switch(request.message) {
       case Message.logoutTwitter:
-        twitterLogoutAction();
+        TwitterCtrl.logout();
+        sendResponse({message: request.message});
       break;
       case Message.loginTwitter:
-        twitterLoginAction(request.account.id, request.account.pass);
+        TwitterCtrl.login(request.account.id, request.account.password);
+        sendResponse({message: request.message});
+      break;
+      case Message.loginCheckTwitter:
+        sendResponse({message: request.message, login: TwitterCtrl.isLogin()});
       break;
     }
   });

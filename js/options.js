@@ -10,7 +10,7 @@
       xis: 'y',
       update: function(e, ui) {
         OptionService.accounts = $scope.accounts;
-      },
+      }
     };
 
     $scope.textOrPassword = OptionService.textOrPassword;
@@ -61,11 +61,11 @@
       // 重複チェック
       var duplicate = accounts.filter(function(elem, index, array) {
         if (elem.id === id) {
-          return elem;
+          return true;
         }
       });
       if (duplicate.length > 0) {
-        alert("アカウント名が重複しています");
+        alert('アカウント名が重複しています');
         return;
       }
       // アカウント追加
@@ -84,7 +84,7 @@
 
     // tab更新
     var tabUpdate = function() {
-      chrome.tabs.getSelected(null,function(tab){
+      chrome.tabs.getSelected(null, function(tab) {
         chrome.tabs.update(tab.id, {url: 'options.html'});
       });
     };
@@ -93,7 +93,7 @@
     var passwordIsVisible = false;
     // inputタグのタイプをtextかpasswordか選択する関数
     var textOrPassword = function() {
-      return this.passwordIsVisible ? 'text' : 'password';
+      return passwordIsVisible ? 'text' : 'password';
     };
 
     // アカウント情報の保存
@@ -105,7 +105,7 @@
         body: '保存しました',
         icon: '../icon128.png'
       });
-      notification.onshow = function () {
+      notification.onshow = function() {
         setTimeout(notification.close, 1800);
       };
       notification.onclick = function() {
@@ -124,7 +124,7 @@
         body: '削除しました',
         icon: '../icon128.png'
       });
-      notification.onshow = function () {
+      notification.onshow = function() {
         setTimeout(notification.close, 1800);
       };
       notification.onclick = function() {
@@ -142,7 +142,7 @@
       isUpdatedAccount: isUpdatedAccount,
       textOrPassword: textOrPassword,
       saveAccounts: saveAccounts,
-      clearAccounts: clearAccounts,
+      clearAccounts: clearAccounts
     };
   }]);
 })();

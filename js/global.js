@@ -6,9 +6,8 @@
   //================================================
   var Const = {
     // twitterのurl
-    twitterUrl: 'https://twitter.com/',
+    twitterUrl: 'https://twitter.com',
     twitterLoginUrl: 'https://twitter.com/login',
-    twitterLogoutUrl: 'https://about.twitter.com/',
     twitterHost: 'twitter.com'
   };
 
@@ -17,24 +16,24 @@
   //------------------------------------------------
   var Message = {
     // twitterpageを開く
-    openTwitter: "twitterOpenMessage",
+    openTwitter: 'twitterOpenMessage',
 
     // login用message
-    loginTwitter: "twitterLoginMessage",
+    loginTwitter: 'twitterLoginMessage',
 
     // logout用message
-    logoutTwitter: "twitterLogoutMessage",
+    logoutTwitter: 'twitterLogoutMessage',
     // logout終了
-    finishLogoutTwitter: "twitterLogoutFinishMessage",
+    finishLogoutTwitter: 'twitterLogoutFinishMessage',
 
     // loginチェック用message
-    loginCheckTwitter: "twitterLoginCheckMessage",
+    loginCheckTwitter: 'twitterLoginCheckMessage',
 
     // twitterのログインページに遷移したmessage
-    moveLoginPageTwitter: "moveLoginPageTwitterMessage",
+    moveLoginPageTwitter: 'moveLoginPageTwitterMessage',
 
     // optionページを開く
-    openOptionPage: "openOptionPageMessage",
+    openOptionPage: 'openOptionPageMessage'
   };
 
   if (!window.TwitWebSwitcher) {
