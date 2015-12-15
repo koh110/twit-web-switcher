@@ -1,17 +1,14 @@
 (function() {
   'use strict';
 
-  var Storage = window.TwitWebSwitcher.Storage;
-
   angular.module('TwitSwitchApp', [])
   // account情報の取得
-  .factory('AccountService', function() {
-    var accounts = Storage.getLocal(Storage.accountsKey);
-    if (accounts === null) {
-      accounts = [];
+  .service('AccountService', function() {
+    const Account = window.TwitWebSwitcher.Account;
+    this.accounts = [];
+    const accounts = Account.loadAll();
+    if (accounts) {
+      this.accounts = accounts;
     }
-    return {
-      accounts: accounts
-    };
   });
 })();

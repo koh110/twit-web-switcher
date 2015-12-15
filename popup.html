@@ -6,7 +6,6 @@
   <script type="text/javascript" src="js/lib/jquery.min.js"></script>
   <script type="text/javascript" src="js/lib/angular.min.js"></script>
   <script type="text/javascript" src="js/global.js"></script>
-  <script type="text/javascript" src="js/storage.js"></script>
   <script type="text/javascript" src="js/angularApp.js"></script>
   <script type="text/javascript" src="js/popup.js"></script>
   <!-- cssファイルの読み込み -->
@@ -23,7 +22,7 @@
 
     <!-- コンテンツエリア -->
     <div ng-repeat="account in accounts" id="accounts">
-      <div class="accountRow" ng-click="login(account.id)">{{account.id}}</div>
+      <div class="accountRow" ng-click="switchAccount(account.id)">{{account.name}}</div>
     </div>
 
     <p class="line"></p>

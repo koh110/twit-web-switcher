@@ -1,55 +1,49 @@
-(function() {
+(() => {
   'use strict';
 
   angular.module('PopupApp', ['TwitSwitchApp'])
   .controller('PopupCtrl', ['$scope', 'AccountService', 'PopupService', function($scope, AccountService, PopupService) {
     $scope.accounts = AccountService.accounts;
-    $scope.login = PopupService.login;
+    $scope.switchAccount = PopupService.switchAccount;
     $scope.openTwitter = PopupService.openTwitter;
     $scope.logout = PopupService.logout;
     $scope.openOptionPage = PopupService.openOptionPage;
   }])
-  .factory('PopupService', [function() {
+  .service('PopupService', [function() {
     var Message = window.TwitWebSwitcher.Message;
-
-    var login = function(accountId) {
+    this.switchAccount = (accountId) => {
       var message = {
-        message: Message.loginTwitter,
+        message: Message.switchTwitterAccount,
         id: accountId
       };
-      chrome.runtime.sendMessage(message, function() {
+      chrome.runtime.sendMessage(message, () => {
         window.close();
       });
     };
-    var openTwitter = function() {
+
+    this.openTwitter = () => {
       var message = {
         message: Message.openTwitter
       };
-      chrome.runtime.sendMessage(message, function() {
+      chrome.runtime.sendMessage(message, () => {
         window.close();
       });
     };
-    var logout = function() {
+    this.logout = () => {
       var message = {
         message: Message.logoutTwitter
       };
-      chrome.runtime.sendMessage(message, function() {
+      chrome.runtime.sendMessage(message, () => {
         window.close();
       });
     };
-    var openOptionPage = function() {
+    this.openOptionPage = () => {
       var message = {
         message: Message.openOptionPage
       };
-      chrome.runtime.sendMessage(message, function() {
+      chrome.runtime.sendMessage(message, () => {
         window.close();
       });
-    };
-    return {
-      login: login,
-      openTwitter: openTwitter,
-      logout: logout,
-      openOptionPage: openOptionPage
     };
   }]);
 })();

@@ -9,17 +9,21 @@
   <script type="text/javascript" src="js/lib/angular.min.js"></script>
   <script type="text/javascript" src="js/lib/angularSortable.js"></script>
   <script type="text/javascript" src="js/global.js"></script>
-  <script type="text/javascript" src="js/storage.js"></script>
   <script type="text/javascript" src="js/angularApp.js"></script>
   <script type="text/javascript" src="js/options.js"></script>
   <!-- cssファイルの読み込み-->
   <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="css/options.css">
 </head>
-<body ng-controller="OptionCtrl">
+<body ng-controller="OptionCtrl as optionCtrl">
   <div id="siteArea">
     <!-- headerエリア -->
-    <div id="headerArea" class="well"><h4>アカウント切り替え設定</h4></div>
+    <div id="headerArea" class="well">
+      <h4>アカウント切り替え設定</h4>
+    </div>
+    <div class="panel panel-default">
+      <span>twitterでログインすると自動的にアカウントが保存されます</span>
+    </div>
 
     <!-- アカウント設定エリア -->
     <div id="accounts" class="panel panel-default">
@@ -27,57 +31,18 @@
         <div class="form-inline">
           <h4>アカウント一覧</h4>
           <table class="table table-hover">
-            <tbody ui-sortable="sortableOptions" ng-model="accounts">
-              <tr ng-repeat="account in accounts" class="accountData animate-repeat">
+            <tbody ui-sortable="optionCtrl.data.sortableOptions" ng-model="optionCtrl.data.accounts">
+              <tr ng-repeat="account in optionCtrl.data.accounts" class="accountData animate-repeat">
                 <th>
                   <i class="glyphicon glyphicon-align-justify"></i>
-                  <input
-                    ng-model="account.id"
-                    ng-change="updateAccount('id', account)"
-                    ng-class="{change: isChange(account).id}"
-                    class="accountId form-control"
-                    type="text"
-                    placeholder="twitter id"/>
-                  <input
-                    ng-model="account.password"
-                    ng-change="updateAccount('password', account)"
-                    ng-class="{change: isChange(account).password}"
-                    class="accountPass form-control"
-                    type="{{textOrPassword()}}"
-                    placeholder="password"
-                    value='{{account.password}}'/>
-                  <i class="delbtn glyphicon glyphicon-trash" ng-click="removeAccount($index)"></i>
+                  <div>{{account.name}}</div>
+                  <i class="delbtn glyphicon glyphicon-trash" ng-click="optionCtrl.func.removeAccount($index)"></i>
                 </th>
               </tr>
             <tbody>
           </table>
         </div>
-        <div class="passwordVisible" ng-show="accounts.length > 0">
-          <label class="checkbox-inline">
-            <input type="checkbox" id="passwordVisible" ng-model="passwordIsVisible">パスワードを表示する
-          </label>
-        </div>
       </div>
-    </div>
-
-    <!-- アカウント追加 -->
-    <div id="addAccount" class="panel panel-default form-inline">
-      <div class="panel-body">
-        <h4>アカウントを追加する</h4>
-        <div class="form-group">
-          <form>
-            <input class="accountId form-control" type="text" placeholder="twitter id" ng-model="add.id" required/>
-            <input class="accountPass form-control" type="password" placeholder="password" ng-model="add.password" required/>
-            <button class="btn" id="addAccountBtn" ng-disabled="addAccount.$invalid" ng-click="addAccount()">+</button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- buttonエリア -->
-    <div id="buttonArea" class="well">
-      <button id="saveBtn" class="btn btn-lg btn-primary" ng-click="saveAccount()">save</button>
-      <button id="clearBtn" class="btn btn-lg" ng-click="clearAccount()">clear</button>
     </div>
   </div>
 </body>
