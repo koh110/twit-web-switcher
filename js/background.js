@@ -45,50 +45,27 @@
     }
   }();
 
-  var Tab = {
-    info: null,
-    loading: false
-  };
-
-  // ページ更新イベント
-  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (Tab.info && Tab.info.id === tabId) {
-      if (tab.status === 'complete') {
-        Tab.loading = false;
-      } else {
-        Tab.loading = true;
-      }
+  const Tabs = new class {
+    getCurrent() {
+      return new Promise((resolve) => {
+        chrome.tabs.query({active: true}, (tab) => {
+          resolve(tab[0]);
+        });
+      });
     }
-  });
-
-  // twitterを新しいタブに開く
-  var createTwitterTab = () => {
-    return new Promise((resolve) => {
-      chrome.tabs.create({url: Const.twitterUrl, selected: true}, (tab) => {
-        resolve(tab);
+    createTwitter() {
+      return new Promise((resolve) => {
+        chrome.tabs.create({url: Const.twitterUrl, selected: true}, (tab) => {
+          resolve(tab);
+        });
       });
-    });
-  };
-
-  var logout = () => {
-    var message = {
-      message: Message.logoutTwitter
-    };
-    var sendLogoutMessage = (resolve) => {
-      chrome.tabs.sendMessage(Tab.info.id, message, (response) => {
-        resolve(response);
+    }
+    // オプションページの呼び出し
+    showOption() {
+      chrome.tabs.query({active: true}, () => {
+        chrome.tabs.create({url: 'options.html', selected: true});
       });
-    };
-    return new Promise((resolve) => {
-      sendLogoutMessage(resolve);
-    });
-  };
-
-  // オプションページの呼び出し
-  var showOption = () => {
-    chrome.tabs.query({active: true}, () => {
-      chrome.tabs.create({url: 'options.html', selected: true});
-    });
+    }
   };
 
   // messageの受け取りイベントリスナー
@@ -105,20 +82,27 @@
         });
       });
     } else if (request.message === Message.switchTwitterAccount) {
-      const token = Account.load(request.id).token;
-      Cookie.setToken(token).then(() => {
-        chrome.tabs.getSelected(null, (tab) => {
-          chrome.tabs.reload(tab.id);
+      const set = () => {
+        const token = Account.load(request.id).token;
+        Cookie.setToken(token).then(() => {
+          chrome.tabs.getSelected(null, (tab) => {
+            chrome.tabs.reload(tab.id);
+          });
         });
-      });
-    } else if (request.message === Message.logoutTwitter) {
-      chrome.tabs.query({active: true}, (tab) => {
-        logout(tab[0].id);
+      };
+      Tabs.getCurrent().then((tab) => {
+        if (tab.url.indexOf(Const.twitterHost) !== -1) {
+          set();
+        } else {
+          Tabs.createTwitter().then(() => {
+            set();
+          });
+        }
       });
     } else if (request.message === Message.openTwitter) {
-      createTwitterTab();
+      Tabs.createTwitter();
     } else if (request.message === Message.openOptionPage) {
-      showOption();
+      Tabs.showOption();
     }
   });
 })();
